@@ -1,0 +1,139 @@
+%%writefile number_game.cpp
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+#include <cmath>
+#include <sstream>
+
+using namespace std;
+
+void numberRiddle() {
+    vector<pair<int, string>> riddles = {
+        {1, "I am a number between 1 and 10. I am the first prime number. What am I?"},
+        {2, "I am the only even prime number. What am I?"},
+        {3, "I am the largest single-digit number. What am I?"},
+        {4, "I am the number of legs on two cats. What am I?"},
+        {5, "I am the sum of 2 and 3. What am I?"},
+        {6, "I am a perfect square and less than 20. What am I?"},
+        {7, "I am the number of days in a week. What am I?"},
+        {8, "I am the smallest two-digit number. What am I?"},
+        {9, "I am a number that is both odd and less than 10. What am I?"},
+        {10, "I am the number of months in a year. What am I?"}
+    };
+
+    srand(static_cast<unsigned int>(time(0)));
+    int answer = rand() % riddles.size();
+    
+    cout << riddles[answer].second << endl;
+
+    int guess;
+    cout << "Your guess: ";
+    cin >> guess;
+
+    if (guess == riddles[answer].first) {
+        cout << "Correct! The answer is " << riddles[answer].first << endl;
+    } else {
+        cout << "Incorrect! The answer was " << riddles[answer].first << endl;
+    }
+}
+
+void numberGuessing() {
+    srand(static_cast<unsigned int>(time(0)));
+    int numberToGuess = rand() % 100 + 1;
+    int attempts = 0;
+    int guess;
+
+    cout << "Welcome to the Number Guessing Game! Try to guess the number between 1 and 100." << endl;
+
+    do {
+        cout << "Your guess: ";
+        cin >> guess;
+        attempts++;
+
+        if (guess < numberToGuess) {
+            cout << "Too low! Try again." << endl;
+        } else if (guess > numberToGuess) {
+            cout << "Too high! Try again." << endl;
+        } else {
+            cout << "Congratulations! You've guessed the number " << numberToGuess << " in " << attempts << " attempts." << endl;
+        }
+    } while (guess != numberToGuess);
+}
+
+double evaluateExpression(const string& expression) {
+    double result = 0;
+    istringstream iss(expression);
+    double number;
+    char op;
+    iss >> result;
+
+    while (iss >> op >> number) {
+        switch (op) {
+            case '+': result += number; break;
+            case '-': result -= number; break;
+            case '*': result *= number; break;
+            case '/': 
+                if (number != 0) result /= number; 
+                break;
+        }
+    }
+    return result;
+}
+
+void mathChallenge() {
+    srand(static_cast<unsigned int>(time(0)));
+    int target = rand() % 50 + 1;
+    vector<int> numbers(5);
+    
+    cout << "Target number: " << target << endl;
+    cout << "Available numbers: ";
+    
+    for (int& num : numbers) {
+        num = rand() % 10 + 1;
+        cout << num << " ";
+    }
+    cout << endl;
+
+    string expression;
+    
+    while (true) {
+        cout << "Create an expression to reach the target (using available numbers and operations): ";
+        cin.ignore(); // Clear input buffer
+        getline(cin, expression);
+        
+        double result = evaluateExpression(expression);
+        
+        if (result == target) {
+            cout << "Congratulations! You reached the target!" << endl;
+            break;
+        } else {
+            cout << "Result: " << result << ". Try again." << endl;
+        }
+    }
+}
+
+int main() {
+    int choice;
+
+    do {
+        cout << "\nWelcome to the Number Games!" << endl;
+        cout << "Choose a game:" << endl;
+        cout << "1. Number Riddles" << endl;
+        cout << "2. Number Guessing" << endl;
+        cout << "3. Math Challenge" << endl;
+        cout << "4. Exit" << endl;
+        cout << "Enter your choice (1-4): ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: numberRiddle(); break;
+            case 2: numberGuessing(); break;
+            case 3: mathChallenge(); break;
+            case 4: cout << "Thanks for playing!" << endl; break;
+            default: cout << "Invalid choice. Please try again." << endl; break;
+        }
+    } while (choice != 4);
+
+    return 0;
+}
